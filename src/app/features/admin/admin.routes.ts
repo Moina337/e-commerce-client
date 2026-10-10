@@ -22,6 +22,20 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'categories/new',
+        loadComponent: () =>
+          import('./categories/category-form/category-form.component').then(
+            (module) => module.CategoryFormComponent,
+          ),
+      },
+      {
+        path: 'categories/:id/edit',
+        loadComponent: () =>
+          import('./categories/category-form/category-form.component').then(
+            (module) => module.CategoryFormComponent,
+          ),
+      },
+      {
         path: 'categories',
         loadComponent: () =>
           import('./pages/categories/liste-categorie/liste-categorie.component').then(

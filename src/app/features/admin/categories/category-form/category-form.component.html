@@ -1,0 +1,20 @@
+<section class="category-form-page">
+  <h1>{{ isEditingMode() ? 'Modifier une catégorie' : 'Nouvelle catégorie' }}</h1>
+
+  <form class="category-form" [formGroup]="form" (ngSubmit)="saveCategory()">
+    <mat-form-field appearance="outline">
+      <mat-label>Nom de la catégorie</mat-label>
+      <input matInput formControlName="name" />
+
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Le nom est obligatoire.</mat-error>
+      } @else if (form.controls.name.hasError('minlength')) {
+        <mat-error>Le nom doit contenir au moins 3 caractères.</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-flat-button type="submit" [disabled]="form.invalid">
+      {{ isEditingMode() ? 'Enregistrer' : 'Ajouter' }}
+    </button>
+  </form>
+</section>

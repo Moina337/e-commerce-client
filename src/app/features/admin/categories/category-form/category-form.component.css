@@ -1,0 +1,28 @@
+.category-form-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 24px;
+  color: #1c2740;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.category-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: min(100%, 420px);
+}
+
+@media (max-width: 520px) {
+  .category-form {
+    flex-direction: column;
+  }
+}
