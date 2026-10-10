@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './core/admin.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'shop' },
@@ -10,7 +10,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canMatch: [adminGuard],
+
     loadChildren: () =>
       import('./features/admin/admin.routes').then(
         (module) => module.ADMIN_ROUTES,
