@@ -1,0 +1,41 @@
+.shop-shell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background: #f8f9fc;
+}
+
+.shop-header {
+  height: 68px;
+  flex: 0 0 68px;
+  gap: 8px;
+  padding: 0 clamp(16px, 5vw, 64px);
+  border-bottom: 1px solid #e8ebf2;
+  background: #fff;
+}
+
+.shop-brand {
+  color: #1c2740;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.shop-content {
+  width: 100%;
+  flex: 1;
+  box-sizing: border-box;
+  padding: 48px 24px;
+}
+
+.shop-footer {
+  padding: 22px clamp(16px, 5vw, 64px);
+  border-top: 1px solid #e8ebf2;
+  background: #fff;
+  color: #68738b;
+  font-size: 13px;
+}

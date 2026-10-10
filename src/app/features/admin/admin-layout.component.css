@@ -1,0 +1,142 @@
+.admin-shell {
+  height: 100vh;
+  background: #f5f7fb;
+}
+
+.admin-sidebar {
+  width: 248px;
+  padding: 24px 14px 16px;
+  border-right: 1px solid #e8ebf2;
+  background: #fff;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 32px;
+  color: #1c2740;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: #3157d5;
+  color: #fff;
+  font-size: 18px;
+}
+
+.nav-caption {
+  margin: 0 12px 10px;
+  color: #939bb0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+mat-nav-list a[mat-list-item] {
+  margin: 4px 0;
+  border-radius: 9px;
+  color: #68738b;
+  font-size: 14px;
+}
+
+mat-nav-list a[mat-list-item]:hover,
+mat-nav-list a.nav-link-active {
+  background: #eef2ff;
+  color: #3157d5;
+}
+
+.nav-symbol {
+  width: 28px;
+  color: currentColor;
+  font-size: 17px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  position: absolute;
+  right: 14px;
+  bottom: 16px;
+  left: 14px;
+  padding: 14px 10px 0;
+  border-top: 1px solid #edf0f5;
+  color: #939bb0;
+  font-size: 12px;
+}
+
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  height: 68px;
+  flex: 0 0 68px;
+  gap: 12px;
+  padding: 0 30px;
+  border-bottom: 1px solid #e8ebf2;
+  background: #fff;
+  color: #1c2740;
+}
+
+.menu-toggle {
+  min-width: 40px;
+  padding: 0;
+  color: #68738b;
+  font-size: 18px;
+}
+
+.topbar-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+.admin-badge {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e9edff;
+  color: #3157d5;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-name {
+  color: #47516a;
+  font-size: 13px;
+}
+
+.page-content {
+  flex: 1;
+  overflow: auto;
+  padding: 36px;
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 0 14px;
+  }
+
+  .topbar-title,
+  .admin-name {
+    font-size: 12px;
+  }
+
+  .page-content {
+    padding: 22px 16px;
+  }
+}

@@ -1,0 +1,53 @@
+<mat-sidenav-container class="admin-shell">
+  <mat-sidenav class="admin-sidebar" [opened]="sidebarOpen()" mode="side">
+    <a class="brand" routerLink="/admin/dashboard" aria-label="Accueil admin">
+      <span class="brand-mark">E</span>
+      <span class="brand-name">E-commerce</span>
+    </a>
+
+    <p class="nav-caption">GESTION</p>
+    <mat-nav-list aria-label="Navigation administration">
+      <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="nav-link-active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol" aria-hidden="true">◫</span>
+        <span>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/admin/products" routerLinkActive="nav-link-active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol" aria-hidden="true">□</span>
+        <span>Produits</span>
+      </a>
+      <a mat-list-item routerLink="/admin/orders" routerLinkActive="nav-link-active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol" aria-hidden="true">▤</span>
+        <span>Commandes</span>
+      </a>
+      <a mat-list-item routerLink="/admin/customers" routerLinkActive="nav-link-active" ariaCurrentWhenActive="page">
+        <span class="nav-symbol" aria-hidden="true">♙</span>
+        <span>Clients</span>
+      </a>
+    </mat-nav-list>
+
+    <div class="sidebar-footer">Administration</div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="admin-content">
+    <mat-toolbar class="topbar">
+      <button
+        mat-button
+        class="menu-toggle"
+        type="button"
+        (click)="toggleSidebar()"
+        [attr.aria-expanded]="sidebarOpen()"
+        aria-label="Afficher ou masquer le menu"
+      >
+        <span aria-hidden="true">☰</span>
+      </button>
+      <span class="topbar-title">Espace d'administration</span>
+      <span class="topbar-spacer"></span>
+      <span class="admin-badge" aria-hidden="true">AD</span>
+      <span class="admin-name">Administrateur</span>
+    </mat-toolbar>
+
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
