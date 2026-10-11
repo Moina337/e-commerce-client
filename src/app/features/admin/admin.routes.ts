@@ -17,8 +17,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'products',
         loadComponent: () =>
-          import('./pages/products/liste-produit/liste-produit.component').then(
-            (module) => module.ProductsPageComponent,
+          import('./products/product-list.component').then(
+            (module) => module.ProductListComponent,
           ),
       },
       {
