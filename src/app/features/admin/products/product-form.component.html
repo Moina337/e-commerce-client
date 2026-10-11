@@ -1,0 +1,77 @@
+<section class="product-form-page">
+  <h1>{{ isEditing() ? 'Modifier le produit' : 'Nouveau produit' }}</h1>
+
+  @if (error()) {
+    <p class="error-state" role="alert">{{ error() }}</p>
+  }
+  @if (categoriesError()) {
+    <p class="error-state" role="alert">{{ categoriesError() }}</p>
+  }
+
+  <form class="product-form" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Nom du produit</mat-label>
+      <input matInput formControlName="name" maxlength="150" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Le nom est obligatoire.</mat-error>
+      } @else if (form.controls.name.hasError('maxlength')) {
+        <mat-error>Le nom ne peut pas dépasser 150 caractères.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4"></textarea>
+      @if (form.controls.description.hasError('required')) {
+        <mat-error>La description est obligatoire.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Prix</mat-label>
+      <input matInput type="number" min="0" step="0.01" formControlName="price" />
+      @if (form.controls.price.hasError('required')) {
+        <mat-error>Le prix est obligatoire.</mat-error>
+      } @else if (form.controls.price.hasError('min')) {
+        <mat-error>Le prix doit être supérieur ou égal à 0.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Quantité en stock</mat-label>
+      <input matInput type="number" min="0" step="1" formControlName="stockQuantity" />
+      @if (form.controls.stockQuantity.hasError('required')) {
+        <mat-error>La quantité en stock est obligatoire.</mat-error>
+      } @else if (form.controls.stockQuantity.hasError('min')) {
+        <mat-error>La quantité doit être supérieure ou égale à 0.</mat-error>
+      } @else if (form.controls.stockQuantity.hasError('integer')) {
+        <mat-error>La quantité doit être un nombre entier.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Catégorie</mat-label>
+      <mat-select formControlName="categoryId">
+        @for (category of categories(); track category.id) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.categoryId.hasError('required')) {
+        <mat-error>La catégorie est obligatoire.</mat-error>
+      }
+      @if (categoriesLoading()) {
+        <mat-hint>Chargement des catégories…</mat-hint>
+      }
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-flat-button type="submit" [disabled]="form.invalid || saving()">
+        @if (saving()) {
+          Enregistrement…
+        } @else {
+          {{ isEditing() ? 'Enregistrer' : 'Créer le produit' }}
+        }
+      </button>
+    </div>
+  </form>
+</section>

@@ -13,6 +13,13 @@ export class CategoryService {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
+  load(): void {
+    this.getAll().subscribe({
+      // getAll records the failure in the error signal for the UI to display.
+      error: () => undefined,
+    });
+  }
+
   getAll(): Observable<Category[]> {
     return this.track(this.http.get<Category[]>(this.endpoint)).pipe(
       tap((categories) => this.categories.set(categories)),

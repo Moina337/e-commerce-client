@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Page } from '../../shared/models/page.model';
 import { Product } from '../../shared/models/product.model';
+import { ProductRequest } from '../../shared/models/product-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -14,6 +15,18 @@ export class ProductService {
   readonly total = signal(0);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+
+  getById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.endpoint}/${id}`);
+  }
+
+  add(data: ProductRequest): Observable<Product> {
+    return this.http.post<Product>(this.endpoint, data);
+  }
+
+  update(id: number, data: ProductRequest): Observable<Product> {
+    return this.http.put<Product>(`${this.endpoint}/${id}`, data);
+  }
 
   // Pagination is server-side; each page event requests a fresh slice.
   load(page = 0, size = 20): void {

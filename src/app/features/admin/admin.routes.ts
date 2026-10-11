@@ -15,6 +15,20 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'products/new',
+        loadComponent: () =>
+          import('./products/product-form.component').then(
+            (module) => module.ProductFormComponent,
+          ),
+      },
+      {
+        path: 'products/:id/edit',
+        loadComponent: () =>
+          import('./products/product-form.component').then(
+            (module) => module.ProductFormComponent,
+          ),
+      },
+      {
         path: 'products',
         loadComponent: () =>
           import('./products/product-list.component').then(

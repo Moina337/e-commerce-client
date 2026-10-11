@@ -1,0 +1,38 @@
+.product-form-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 24px;
+  color: #1c2740;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.product-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.product-form mat-form-field:nth-child(2),
+.form-actions {
+  grid-column: 1 / -1;
+}
+
+.error-state {
+  margin: 0 0 16px;
+  color: #b42318;
+}
+
+@media (max-width: 600px) {
+  .product-form {
+    grid-template-columns: 1fr;
+  }
+
+  .product-form mat-form-field:nth-child(2),
+  .form-actions {
+    grid-column: auto;
+  }
+}
