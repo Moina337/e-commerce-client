@@ -64,8 +64,75 @@
       }
     </mat-form-field>
 
+    <section class="images-section" aria-labelledby="images-title">
+      <h2 id="images-title">Images du produit</h2>
+
+      <label class="file-picker">
+        <span>Choisir des images</span>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="onFilesSelected($event)"
+        />
+      </label>
+
+      @if (existingImages().length > 0) {
+        <h3>Images enregistrées</h3>
+        <div class="image-grid">
+          @for (image of existingImages(); track image.id) {
+            <div class="image-card">
+              <img [src]="imageUrl(image.url)" [alt]="image.originalFilename" />
+              <span class="image-name">{{ image.originalFilename }}</span>
+              <button
+                mat-button
+                type="button"
+                (click)="deleteExistingImage(image)"
+                [disabled]="deletingImageIds().includes(image.id) || saving()"
+              >
+                {{
+                  deletingImageIds().includes(image.id)
+                    ? 'Suppression…'
+                    : 'Supprimer'
+                }}
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      @if (files().length > 0) {
+        <h3>Nouvelles images</h3>
+        <div class="image-grid">
+          @for (file of files(); track $index; let index = $index) {
+            <div class="image-card">
+              <img [src]="filePreviews()[index]" [alt]="file.name" />
+              <span class="image-name">{{ file.name }}</span>
+              <button
+                mat-button
+                type="button"
+                (click)="removeFile(index)"
+                [disabled]="saving()"
+              >
+                Retirer
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
     <div class="form-actions">
-      <button mat-flat-button type="submit" [disabled]="form.invalid || saving()">
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="
+          form.invalid ||
+          saving() ||
+          deletingImageIds().length > 0 ||
+          existingImages().length + files().length === 0
+        "
+      >
         @if (saving()) {
           Enregistrement…
         } @else {

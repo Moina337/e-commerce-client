@@ -1,5 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
@@ -12,9 +18,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import {
+  catchError,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from 'rxjs';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductService } from '../../../core/services/product.service';
+import { Product } from '../../../shared/models/product.model';
+import { ProductImage } from '../../../shared/models/product-image.model';
 import { ProductRequest } from '../../../shared/models/product-request.model';
+import { environment } from '../../../../environments/environment';
 
 const integerValidator: ValidatorFn = (control) =>
   Number.isInteger(control.value) ? null : { integer: true };
@@ -32,7 +49,9 @@ const integerValidator: ValidatorFn = (control) =>
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.css',
 })
-export class ProductFormComponent {
+export class ProductFormComponent implements OnDestroy {
+  private readonly partialUploadError =
+    'Produit créé, mais l’image n’a pas pu être envoyée';
   private readonly formBuilder = inject(FormBuilder);
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
@@ -56,6 +75,11 @@ export class ProductFormComponent {
   readonly categories = this.categoryService.categories;
   readonly categoriesLoading = this.categoryService.loading;
   readonly categoriesError = this.categoryService.error;
+  readonly files = signal<File[]>([]);
+  readonly filePreviews = signal<string[]>([]);
+  readonly existingImages = signal<ProductImage[]>([]);
+  readonly deletingImageIds = signal<number[]>([]);
+  readonly apiUrl = environment.apiUrl;
 
   private productId: number | null = null;
 
@@ -85,18 +109,17 @@ export class ProductFormComponent {
       this.productId = id;
       this.isEditing.set(true);
       this.error.set(null);
+      const navigationError =
+        this.router.getCurrentNavigation()?.extras.state?.['uploadError'];
+      if (typeof navigationError === 'string') {
+        this.error.set(navigationError);
+      }
       this.productService
         .getById(id)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (product) =>
-            this.form.patchValue({
-              name: product.name,
-              description: product.description,
-              price: product.price,
-              stockQuantity: product.stockQuantity,
-              categoryId: product.category.id,
-            }),
+            this.loadProduct(product),
           error: (error: unknown) => {
             if (error instanceof HttpErrorResponse && error.status === 404) {
               void this.router.navigate(['/admin/products']);
@@ -108,8 +131,69 @@ export class ProductFormComponent {
     });
   }
 
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const selectedFiles = Array.from(input.files ?? []);
+    const imageFiles = selectedFiles.filter((file) =>
+      file.type.startsWith('image/'),
+    );
+
+    this.files.update((files) => [...files, ...imageFiles]);
+    this.filePreviews.update((previews) => [
+      ...previews,
+      ...imageFiles.map((file) => URL.createObjectURL(file)),
+    ]);
+    input.value = '';
+  }
+
+  removeFile(index: number): void {
+    const previews = this.filePreviews();
+    URL.revokeObjectURL(previews[index]);
+    this.files.update((files) => files.filter((_, fileIndex) => fileIndex !== index));
+    this.filePreviews.update((current) =>
+      current.filter((_, previewIndex) => previewIndex !== index),
+    );
+  }
+
+  deleteExistingImage(image: ProductImage): void {
+    if (this.deletingImageIds().includes(image.id)) {
+      return;
+    }
+
+    this.deletingImageIds.update((ids) => [...ids, image.id]);
+    this.error.set(null);
+    this.productService
+      .deleteImage(image.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.existingImages.update((images) =>
+            images.filter((current) => current.id !== image.id),
+          );
+          this.deletingImageIds.update((ids) =>
+            ids.filter((id) => id !== image.id),
+          );
+        },
+        error: (error: unknown) => {
+          this.error.set(this.getErrorMessage(error));
+          this.deletingImageIds.update((ids) =>
+            ids.filter((id) => id !== image.id),
+          );
+        },
+      });
+  }
+
+  imageUrl(url: string): string {
+    return new URL(url, environment.apiUrl).toString();
+  }
+
   submit(): void {
-    if (this.form.invalid || this.saving()) {
+    if (
+      this.form.invalid ||
+      this.saving() ||
+      this.deletingImageIds().length > 0 ||
+      this.existingImages().length + this.files().length === 0
+    ) {
       this.form.markAllAsTouched();
       return;
     }
@@ -122,15 +206,40 @@ export class ProductFormComponent {
       ...formValue,
       categoryId: formValue.categoryId,
     };
-    const request = this.productId === null
-      ? this.productService.add(data)
-      : this.productService.update(this.productId, data);
-
+    const productId = this.productId;
+    const selectedFiles = this.files();
+    const request: Observable<{ product: Product; uploadFailed: boolean }> =
+      productId === null
+        ? this.productService.add(data).pipe(
+            switchMap((product) =>
+              this.uploadFiles(product.id, selectedFiles).pipe(
+                map(() => ({ product, uploadFailed: false })),
+                catchError(() => {
+                  this.error.set(this.partialUploadError);
+                  return of({ product, uploadFailed: true });
+                }),
+              ),
+            ),
+          )
+        : this.productService.update(productId, data).pipe(
+            switchMap((product) =>
+              this.uploadFiles(product.id, selectedFiles).pipe(
+                map(() => ({ product, uploadFailed: false })),
+              ),
+            ),
+          );
     this.saving.set(true);
     this.error.set(null);
     request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
+      next: ({ product, uploadFailed }) => {
         this.saving.set(false);
+        if (uploadFailed) {
+          void this.router.navigate(
+            ['/admin/products', product.id, 'edit'],
+            { state: { uploadError: this.partialUploadError } },
+          );
+          return;
+        }
         void this.router.navigate(['/admin/products']);
       },
       error: (error: unknown) => {
@@ -138,6 +247,35 @@ export class ProductFormComponent {
         this.saving.set(false);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.filePreviews().forEach((previewUrl) =>
+      URL.revokeObjectURL(previewUrl),
+    );
+  }
+
+  private loadProduct(product: Product): void {
+    this.form.patchValue({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stockQuantity: product.stockQuantity,
+      categoryId: product.category.id,
+    });
+    this.existingImages.set(product.images);
+  }
+
+  private uploadFiles(
+    productId: number,
+    files: File[],
+  ): Observable<ProductImage[]> {
+    if (files.length === 0) {
+      return of<ProductImage[]>([]);
+    }
+    return forkJoin(
+      files.map((file) => this.productService.uploadImage(productId, file)),
+    );
   }
 
   private getErrorMessage(error: unknown): string {

@@ -4,6 +4,7 @@ import { finalize, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Page } from '../../shared/models/page.model';
 import { Product } from '../../shared/models/product.model';
+import { ProductImage } from '../../shared/models/product-image.model';
 import { ProductRequest } from '../../shared/models/product-request.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +27,21 @@ export class ProductService {
 
   update(id: number, data: ProductRequest): Observable<Product> {
     return this.http.put<Product>(`${this.endpoint}/${id}`, data);
+  }
+
+  uploadImage(productId: number, file: File): Observable<ProductImage> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<ProductImage>(
+      `${this.endpoint}/${productId}/images`,
+      formData,
+    );
+  }
+
+  deleteImage(imageId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${environment.apiUrl}/api/admin/images/${imageId}`,
+    );
   }
 
   // Pagination is server-side; each page event requests a fresh slice.
