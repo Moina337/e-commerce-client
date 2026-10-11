@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
@@ -26,6 +26,7 @@ import { CategoryService } from '../../../../core/services/category.service';
 export class CategoryFormComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly categoryService = inject(CategoryService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -34,26 +35,35 @@ export class CategoryFormComponent {
   });
 
   readonly isEditingMode = signal(false);
-  private categoryId: string | null = null;
+  readonly loading = this.categoryService.loading;
+  readonly error = this.categoryService.error;
+  private categoryId: number | null = null;
 
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const id = params.get('id');
-      this.categoryId = id;
-      this.isEditingMode.set(id !== null);
-
-      if (id === null) {
+      const routeId = params.get('id');
+      if (routeId === null) {
+        this.categoryId = null;
+        this.isEditingMode.set(false);
         this.form.reset();
         return;
       }
 
-      const category = this.categoryService.getById(id);
-      if (!category) {
+      const id = Number(routeId);
+      if (!Number.isInteger(id)) {
         void this.router.navigate(['/admin/categories']);
         return;
       }
 
-      this.form.patchValue({ name: category.name });
+      this.categoryId = id;
+      this.isEditingMode.set(true);
+      this.categoryService
+        .getById(id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (category) => this.form.patchValue({ name: category.name }),
+          error: () => undefined,
+        });
     });
   }
 
@@ -63,16 +73,15 @@ export class CategoryFormComponent {
     }
 
     const name = this.form.controls.name.value;
-    if (this.categoryId) {
-      if (!this.categoryService.update(this.categoryId, name)) {
+    const request = this.categoryId
+      ? this.categoryService.update(this.categoryId, name)
+      : this.categoryService.add(name);
+    request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.form.reset();
         void this.router.navigate(['/admin/categories']);
-        return;
-      }
-    } else {
-      this.categoryService.add(name);
-    }
-
-    this.form.reset();
-    void this.router.navigate(['/admin/categories']);
+      },
+      error: () => undefined,
+    });
   }
 }

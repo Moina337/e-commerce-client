@@ -10,7 +10,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-
+    canMatch: [adminGuard],
     loadChildren: () =>
       import('./features/admin/admin.routes').then(
         (module) => module.ADMIN_ROUTES,

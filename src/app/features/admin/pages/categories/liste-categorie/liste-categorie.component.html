@@ -8,7 +8,13 @@
     <a mat-flat-button routerLink="/admin/categories/new">Nouvelle catégorie</a>
   </header>
 
-  @if (categories().length === 0) {
+  @if (error()) {
+    <p class="error-state" role="alert">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="loading-state" role="status">Chargement des catégories…</p>
+  } @else if (categories().length === 0 && !error()) {
     <p class="empty-state" role="status">Aucune catégorie à afficher.</p>
   } @else {
     <div class="table-container">
@@ -18,21 +24,15 @@
           <td mat-cell *matCellDef="let category">{{ category.name }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef>Description</th>
-          <td mat-cell *matCellDef="let category">{{ category.description }}</td>
+        <ng-container matColumnDef="slug">
+          <th mat-header-cell *matHeaderCellDef>Slug</th>
+          <td mat-cell *matCellDef="let category">{{ category.slug }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Date de création</th>
           <td mat-cell *matCellDef="let category">
-            <span
-              class="status"
-              [class.status-active]="category.active"
-              [class.status-inactive]="!category.active"
-            >
-              {{ category.active ? 'Active' : 'Inactive' }}
-            </span>
+            {{ category.createdAt | date: 'short' }}
           </td>
         </ng-container>
 
@@ -46,6 +46,15 @@
             >
               Modifier
             </a>
+            <button
+              mat-button
+              type="button"
+              (click)="deleteCategory(category.id)"
+              [disabled]="loading()"
+              [attr.aria-label]="'Supprimer ' + category.name"
+            >
+              Supprimer
+            </button>
           </td>
         </ng-container>
 

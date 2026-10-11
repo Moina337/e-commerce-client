@@ -57,24 +57,6 @@ td {
   font-size: 13px;
 }
 
-.status {
-  display: inline-block;
-  padding: 4px 9px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.status-active {
-  background: #e8f7ef;
-  color: #18794e;
-}
-
-.status-inactive {
-  background: #f0f1f5;
-  color: #68738b;
-}
-
 .empty-state {
   margin: 0;
   padding: 32px 20px;
@@ -82,4 +64,14 @@ td {
   border-radius: 10px;
   color: #68738b;
   text-align: center;
+}
+
+.loading-state,
+.error-state {
+  margin: 0;
+  padding: 16px 0;
+}
+
+.error-state {
+  color: #b42318;
 }

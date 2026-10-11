@@ -1,6 +1,14 @@
 <section class="category-form-page">
   <h1>{{ isEditingMode() ? 'Modifier une catégorie' : 'Nouvelle catégorie' }}</h1>
 
+  @if (error()) {
+    <p class="error-state" role="alert">{{ error() }}</p>
+  }
+
+  @if (loading() && isEditingMode()) {
+    <p role="status">Chargement de la catégorie…</p>
+  }
+
   <form class="category-form" [formGroup]="form" (ngSubmit)="saveCategory()">
     <mat-form-field appearance="outline">
       <mat-label>Nom de la catégorie</mat-label>
@@ -13,7 +21,7 @@
       }
     </mat-form-field>
 
-    <button mat-flat-button type="submit" [disabled]="form.invalid">
+    <button mat-flat-button type="submit" [disabled]="form.invalid || loading()">
       {{ isEditingMode() ? 'Enregistrer' : 'Ajouter' }}
     </button>
   </form>

@@ -21,6 +21,11 @@ mat-form-field {
   width: min(100%, 420px);
 }
 
+.error-state {
+  margin: 0 0 16px;
+  color: #b42318;
+}
+
 @media (max-width: 520px) {
   .category-form {
     flex-direction: column;
