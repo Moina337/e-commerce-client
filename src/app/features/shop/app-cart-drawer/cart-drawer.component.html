@@ -1,0 +1,51 @@
+@if (drawer.isOpen()) {
+  <div class="backdrop" (click)="drawer.close()"></div>
+
+  <aside class="drawer" role="dialog" aria-modal="true" aria-label="Panier">
+    <header class="drawer__header">
+      <h2>Panier ({{ cart.count() }})</h2>
+      <button type="button" class="drawer__close" aria-label="Fermer"
+              (click)="drawer.close()">×</button>
+    </header>
+
+    @if (cart.items().length === 0) {
+      <p class="drawer__empty">Votre panier est vide.</p>
+    } @else {
+      <ul class="drawer__list">
+        @for (item of cart.items(); track item.product.id) {
+          <li class="line">
+            <div class="line__image">
+              <img [src]="item.product.images[0]?.url" [alt]="item.product.name" />
+            </div>
+
+            <div class="line__info">
+              <p class="line__name">{{ item.product.name }}</p>
+              <app-price [value]="item.product.price" />
+
+              <div class="line__quantity">
+                <button type="button" aria-label="Retirer un"
+                        (click)="cart.decrease(item.product.id)">−</button>
+                <span>{{ item.quantity }}</span>
+                <button type="button" aria-label="Ajouter un"
+                        (click)="cart.increase(item.product.id)">+</button>
+              </div>
+            </div>
+
+            <button type="button" class="line__remove" aria-label="Supprimer"
+                    (click)="cart.remove(item.product.id)">×</button>
+          </li>
+        }
+      </ul>
+
+      <footer class="drawer__footer">
+        <p class="drawer__total">
+          <span>Total</span>
+          <app-price [value]="cart.total()" />
+        </p>
+        <app-button variant="secondary" [fullWidth]="true" (clicked)="goToCart()">
+          Voir le panier
+        </app-button>
+      </footer>
+    }
+  </aside>
+}

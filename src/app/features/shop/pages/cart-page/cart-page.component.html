@@ -1,0 +1,62 @@
+<section class="cart">
+  <h1>Votre panier</h1>
+
+  @if (cart.items().length === 0) {
+    <div class="cart__empty">
+      <p>Votre panier est vide.</p>
+      <a routerLink="/shop/products">Découvrir la collection</a>
+    </div>
+  } @else {
+    <div class="cart__layout">
+      <ul class="cart__list">
+        @for (item of cart.items(); track item.product.id) {
+          <li class="line">
+            <div class="line__image">
+              <img [src]="item.product.images[0]?.url" [alt]="item.product.name" />
+            </div>
+
+            <div class="line__info">
+              <h2 class="line__name">{{ item.product.name }}</h2>
+              <p class="line__category">{{ item.product.category.name }}</p>
+              <app-price [value]="item.product.price" />
+            </div>
+
+            <div class="line__quantity">
+              <button type="button" aria-label="Retirer un"
+                      (click)="cart.decrease(item.product.id)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button type="button" aria-label="Ajouter un"
+                      (click)="cart.increase(item.product.id)">+</button>
+            </div>
+
+            <div class="line__total">
+              <app-price [value]="item.product.price * item.quantity" />
+            </div>
+
+            <button class="line__remove" type="button"
+                    (click)="cart.remove(item.product.id)">
+              Supprimer
+            </button>
+          </li>
+        }
+      </ul>
+
+      <aside class="summary">
+        <h2>Récapitulatif</h2>
+        <p class="summary__row">
+          <span>Articles</span>
+          <span>{{ cart.count() }}</span>
+        </p>
+        <p class="summary__row summary__row--total">
+          <span>Total</span>
+          <app-price [value]="cart.total()" />
+        </p>
+
+        <app-button [fullWidth]="true" [disabled]="true">Commander (bientôt)</app-button>
+        <button class="summary__clear" type="button" (click)="cart.clear()">
+          Vider le panier
+        </button>
+      </aside>
+    </div>
+  }
+</section>

@@ -1,0 +1,61 @@
+:host {
+  display: inline-block;
+}
+
+:host(.is-full-width) {
+  display: block;
+}
+
+/* ... le reste de ton CSS avec les var(--...) ... */
+
+.app-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.app-button:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.app-button:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.app-button:disabled {
+  background: var(--color-disabled-bg);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
+
+.app-button--secondary {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.app-button--secondary:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-bg);
+}
+
+.app-button--secondary:disabled {
+  border-color: var(--color-disabled-bg);
+  background: var(--color-bg);
+}
+
+.app-button--full-width {
+  width: 100%;
+}

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ShopLayoutComponent } from './shop-layout.component';
+import { ShopLayoutComponent } from './shop-layout/shop-layout.component';
 
 export const SHOP_ROUTES: Routes = [
   {
@@ -7,13 +7,31 @@ export const SHOP_ROUTES: Routes = [
     component: ShopLayoutComponent,
     children: [
       {
+        path: 'shop/products',
+        redirectTo: 'shop',
+      },
+      {
+        path: 'shop',
+        loadComponent: () =>
+          import('./pages/shop-page/shop-page.component').then(
+            (module) => module.ShopPageComponent,
+          ),
+      },
+      
+      {
+          path: 'shop/cart',
+          loadComponent: () =>
+          import('./pages/cart-page/cart-page.component').then(
+            (module) => module.CartPageComponent,
+          ),
+      },
+      {
         path: '',
         loadComponent: () =>
-          import('./pages/home-page.component').then(
+          import('./pages/home-page/home-page.component').then(
             (module) => module.HomePageComponent,
           ),
       },
-      { path: '**', redirectTo: '' },
     ],
   },
 ];

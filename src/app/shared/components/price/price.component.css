@@ -1,0 +1,8 @@
+:host {
+  display: inline-block;
+}
+
+.price {
+  color: var(--color-accent);
+  font-weight: 700;
+}

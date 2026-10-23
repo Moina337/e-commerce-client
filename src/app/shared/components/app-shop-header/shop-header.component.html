@@ -1,0 +1,29 @@
+<header class="header">
+  <div class="header__inner">
+    <a class="header__logo" routerLink="/shop" (click)="closeMenu()">STRIDE</a>
+
+    <button
+      class="header__burger"
+      type="button"
+      aria-label="Ouvrir le menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="toggleMenu()"
+    >
+      ☰
+    </button>
+
+    <nav class="header__nav" [class.header__nav--open]="menuOpen()">
+      <a routerLink="/shop" routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Accueil</a>
+      <a routerLink="/shop/products" routerLinkActive="is-active" (click)="closeMenu()">Boutique</a>
+      <a routerLink="/login" (click)="closeMenu()">Connexion</a>
+
+     <button class="header__cart" type="button" (click)="drawer.open(); closeMenu()">
+  Panier
+  @if (count() > 0) {
+    <span class="header__badge">{{ count() }}</span>
+  }
+</button>
+    </nav>
+  </div>
+</header>

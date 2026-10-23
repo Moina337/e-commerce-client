@@ -2,9 +2,8 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'shop' },
   {
-    path: 'shop',
+    path: '',
     loadChildren: () =>
       import('./features/shop/shop.routes').then((module) => module.SHOP_ROUTES),
   },
@@ -23,5 +22,5 @@ export const routes: Routes = [
         (module) => module.LoginPageComponent,
       ),
   },
-  { path: '**', redirectTo: 'shop' },
+  { path: '**', redirectTo: '' },
 ];

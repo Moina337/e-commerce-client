@@ -1,0 +1,26 @@
+
+<article class="card">
+  <div class="card__image">
+    <img
+      [src]="productImage"
+      [alt]="product().name || 'Image du produit'"
+      loading="lazy"
+      (error)="onImageError($event)"
+    />
+  </div>
+
+  <div class="card__body">
+    <p class="card__category">
+      {{ product().category?.name || 'Sans catégorie' }}
+    </p>
+
+    <h3 class="card__name">
+      {{ product().name || 'Produit sans nom' }}
+    </h3>
+
+   <app-price class="card__price" [value]="product().price" />
+
+  <app-add-to-cart [product]="product()" />
+    
+  </div>
+</article>

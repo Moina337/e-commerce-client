@@ -1,0 +1,120 @@
+
+<section class="shop-page" aria-labelledby="shop-page-title">
+  <header class="shop-page__header">
+    <p class="shop-page__eyebrow">TOUS NOS PRODUITS</p>
+
+    <h1 id="shop-page-title">La boutique</h1>
+
+    <p class="shop-page__intro">
+      Recherchez et filtrez les produits pour trouver votre paire.
+    </p>
+  </header>
+
+  <div
+    class="shop-page__filters"
+    aria-label="Recherche et filtres des produits"
+  >
+    <label class="shop-page__field">
+      <span>Rechercher</span>
+
+      <input
+        type="search"
+        placeholder="Nom, description..."
+        [value]="searchTerm()"
+        (input)="onSearchInput($event)"
+      />
+    </label>
+
+    <label class="shop-page__field">
+      <span>Catégorie</span>
+
+      <select
+        [value]="selectedCategoryId() ?? ''"
+        (change)="onCategoryChange($event)"
+      >
+        <option value="">Toutes les catégories</option>
+
+        @for (category of categories(); track category.id) {
+          <option [value]="category.id">
+            {{ category.name }}
+          </option>
+        }
+      </select>
+    </label>
+
+    <label class="shop-page__field">
+      <span>Trier par</span>
+
+      <select
+        [value]="sortOrder()"
+        (change)="onSortChange($event)"
+      >
+        <option value="default">Ordre initial</option>
+        <option value="name">Nom</option>
+        <option value="price-asc">Prix croissant</option>
+        <option value="price-desc">Prix décroissant</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="shop-page__results" aria-live="polite">
+    @if (filteredProducts().length > 0) {
+      <p class="shop-page__count">
+        Affichage de {{ firstVisibleProduct() }} à
+        {{ lastVisibleProduct() }}
+        sur {{ filteredProducts().length }} produits
+      </p>
+
+      <div class="product-grid">
+       @for (product of paginatedProducts(); track product.id) {
+  <app-product-card
+    [product]="product"
+    (addToCart)="onAddToCart($event)"
+  />
+}
+      </div>
+
+      @if (pageCount() > 1) {
+        <nav
+          class="shop-page__pagination"
+          aria-label="Pagination des produits"
+        >
+          <app-button
+            variant="secondary"
+            [disabled]="safePageIndex() === 0"
+            (clicked)="goToPage(safePageIndex() - 1)"
+          >
+            Précédent
+          </app-button>
+
+          @for (page of pageNumbers(); track page) {
+            <app-button
+              [variant]="page === safePageIndex() ? 'primary' : 'secondary'"
+              [disabled]="page === safePageIndex()"
+              [attr.aria-current]="page === safePageIndex() ? 'page' : null"
+              (clicked)="goToPage(page)"
+            >
+              {{ page + 1 }}
+            </app-button>
+          }
+
+          <app-button
+            variant="secondary"
+            [disabled]="safePageIndex() >= pageCount() - 1"
+            (clicked)="goToPage(safePageIndex() + 1)"
+          >
+            Suivant
+          </app-button>
+        </nav>
+      }
+    } @else {
+      <div class="shop-page__empty">
+        <h2>Aucun produit trouvé</h2>
+
+        <p>
+          Modifiez votre recherche ou vos filtres pour voir des produits.
+        </p>
+      </div>
+    }
+  </div>
+</section>

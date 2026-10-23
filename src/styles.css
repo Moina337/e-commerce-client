@@ -1,15 +1,56 @@
-/* You can add global styles to this file, and also import other style files */
-
-@import 'tailwindcss';
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
-html,
-body {
-  height: 100%;
+:root {
+  --color-primary: #1c1c1e;
+  --color-accent: #a0612b;
+  --color-accent-hover: #864f22;
+  --color-bg: #f5f1ea;
+  --color-surface: #ffffff;
+  --color-text: #1c1c1e;
+  --color-text-muted: #6b6b6b;
+  --color-border: #ddd6ca;
+  --color-disabled-bg: #e4dfd6;
+  --color-disabled-text: #8a857c;
+  --color-danger: #b3261e;
+
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --radius: 4px;
+  --shadow-card: 0 2px 12px rgb(0 0 0 / 8%);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+  --space-6: 64px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  color: #1c2740;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  margin: 0 0 var(--space-3);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
 }
