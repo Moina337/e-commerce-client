@@ -1,29 +1,115 @@
 <header class="header">
   <div class="header__inner">
-    <a class="header__logo" routerLink="/shop" (click)="closeMenu()">STRIDE</a>
-
+    <!-- Bouton Burger (mobile) -->
     <button
       class="header__burger"
       type="button"
-      aria-label="Ouvrir le menu"
+      aria-label="Menu principal"
       [attr.aria-expanded]="menuOpen()"
       (click)="toggleMenu()"
     >
-      ☰
+      @if (!menuOpen()) {
+        <svg class="header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      } @else {
+        <svg class="header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      }
     </button>
 
-    <nav class="header__nav" [class.header__nav--open]="menuOpen()">
-      <a routerLink="/shop" routerLinkActive="is-active"
-         [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Accueil</a>
-      <a routerLink="/shop/products" routerLinkActive="is-active" (click)="closeMenu()">Boutique</a>
-      <a routerLink="/login" (click)="closeMenu()">Connexion</a>
+    <!-- Logo Amiora -->
+    <a class="header__logo" routerLink="/shop" (click)="closeMenu()" aria-label="Amiora Accueil">
+      <span class="header__logo-ami">Ami</span><span class="header__logo-ora">ora</span>
+    </a>
 
-     <button class="header__cart" type="button" (click)="drawer.open(); closeMenu()">
-  Panier
-  @if (count() > 0) {
-    <span class="header__badge">{{ count() }}</span>
-  }
-</button>
+    <!-- Liens de navigation centraux -->
+    <nav class="header__nav" [class.header__nav--open]="menuOpen()">
+      <a
+        routerLink="/"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="header__nav-link"
+        (click)="closeMenu()"
+      >
+        Accueil
+      </a>
+      <a
+        routerLink="/shop"
+        routerLinkActive="is-active"
+        class="header__nav-link"
+        (click)="closeMenu()"
+      >
+        Boutique
+      </a>
     </nav>
+
+    <!-- Actions utilisateur et panier -->
+    <div class="header__actions">
+      <!-- Section Utilisateur -->
+      @if (currentUser(); as user) {
+        <div class="header__user-chip">
+          <svg class="header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span class="header__user-name">{{ user.name }}</span>
+          @if (isAdmin()) {
+            <a routerLink="/admin" class="header__admin-link" (click)="closeMenu()">Admin</a>
+          }
+          <button
+            type="button"
+            class="header__logout-btn"
+            (click)="logout()"
+            title="Se déconnecter"
+            aria-label="Se déconnecter"
+          >
+            <svg class="header__icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+        </div>
+      } @else {
+        <a
+          routerLink="/login"
+          class="header__action-btn"
+          (click)="closeMenu()"
+          title="Connexion"
+          aria-label="Se connecter à votre compte"
+        >
+          <svg class="header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span class="header__action-label">Connexion</span>
+        </a>
+      }
+
+      <!-- Bouton Panier avec icône et badge -->
+      <button
+        class="header__cart-btn"
+        type="button"
+        (click)="drawer.open(); closeMenu()"
+        aria-label="Ouvrir le panier"
+      >
+        <div class="header__cart-icon-wrapper">
+          <svg class="header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <path d="M3 6h18"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          @if (count() > 0) {
+            <span class="header__badge">{{ count() }}</span>
+          }
+        </div>
+        <span class="header__cart-label">Panier</span>
+      </button>
+    </div>
   </div>
 </header>
