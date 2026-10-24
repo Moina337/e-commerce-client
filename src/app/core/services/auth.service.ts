@@ -14,6 +14,12 @@ interface LoginResponse {
   accessToken?: string;
 }
 
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -27,32 +33,45 @@ export class AuthService {
   readonly error = signal<string | null>(null);
   readonly isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
 
-  login(credentials: LoginCredentials): Observable<User> {
-    this.loading.set(true);
-    this.error.set(null);
+  register(data: RegisterData): Observable<User> {
+  return this.authenticate(
+    this.http.post<LoginResponse>(`${environment.apiUrl}/api/auth/register`, data),
+  );
+}
 
-    return this.http
-      .post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials)
-      .pipe(
-        switchMap((response) => {
-          const token = response.accessToken ?? response.token;
-          if (!token) {
-            return throwError(
-              () => new Error('La réponse de connexion ne contient pas de token.'),
-            );
-          }
-          this.setToken(token);
-          return this.fetchCurrentUser();
-        }),
-        tap((user) => this.currentUser.set(user)),
-        catchError((error: unknown) => {
-          this.error.set(this.getErrorMessage(error));
-          this.clearSession();
-          return throwError(() => error);
-        }),
-        finalize(() => this.loading.set(false)),
-      );
+  login(credentials: LoginCredentials): Observable<User> {
+  return this.authenticate(
+    this.http.post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials),
+  );
+}
+
+// Commun au login et à l'inscription : même réponse, même suite
+private authenticate(request$: Observable<LoginResponse>): Observable<User> {
+  this.loading.set(true);
+  this.error.set(null);
+
+  return request$.pipe(
+    switchMap((response) => this.startSession(response)),
+    tap((user) => this.currentUser.set(user)),
+    catchError((error: unknown) => {
+      this.error.set(this.getErrorMessage(error));
+      this.clearSession();
+      return throwError(() => error);
+    }),
+    finalize(() => this.loading.set(false)),
+  );
+}
+
+private startSession(response: LoginResponse): Observable<User> {
+  const token = response.accessToken ?? response.token;
+  if (!token) {
+    return throwError(
+      () => new Error('La réponse du serveur ne contient pas de token.'),
+    );
   }
+  this.setToken(token);
+  return this.fetchCurrentUser();
+}
 
   getCurrentUser(): Observable<User> {
     this.loading.set(true);

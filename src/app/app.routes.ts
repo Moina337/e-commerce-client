@@ -18,8 +18,15 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./features/auth/login-page.component').then(
+      import('./features/auth/login-page/login-page.component').then(
         (module) => module.LoginPageComponent,
+      ),
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register-page/register-page.component').then(
+        (module) => module.RegisterPageComponent,
       ),
   },
   { path: '**', redirectTo: '' },
