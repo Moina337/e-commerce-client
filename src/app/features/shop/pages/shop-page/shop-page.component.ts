@@ -1,7 +1,7 @@
 
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed,inject,  signal } from '@angular/core';
 
-import { mockProducts } from '../../../../mocks/product_mock';
+import { ShopProductService } from '../../../../core/services/shop-product.service'; 
 import { ShopProduct } from '../../../../shared/models/shop-product.model';
 
 import { ProductCardComponent } from '../../../../shared/components/product-card/product-card.component';
@@ -17,7 +17,16 @@ type ProductSortOrder = 'default' | 'name' | 'price-asc' | 'price-desc';
   styleUrl: './shop-page.component.css',
 })
 export class ShopPageComponent {
-  private readonly products = signal<ShopProduct[]>(mockProducts);
+
+  private readonly service = inject(ShopProductService);
+
+  private readonly products = this.service.products;
+  readonly loading = this.service.loading;
+  readonly error = this.service.error;
+
+  constructor() {
+    this.service.loadProducts();
+  }
 
   readonly pageSize = 4;
 

@@ -1,67 +1,81 @@
-<section class="product-page">
-  @if (product(); as prod) {
-    <nav class="product-page__nav" aria-label="Navigation">
-      <a routerLink="/shop" class="product-page__back-link">
-        &larr; Retour à la boutique
-      </a>
+<section class="product">
+  @if (status() === 'loading') {
+    <p class="product__state">Chargement du produit…</p>
+  } @else if (status() === 'not-found') {
+    <div class="product__state">
+      <h1>Produit introuvable</h1>
+      <a routerLink="/shop/products">Retour à la boutique</a> <!-- ADAPTER -->
+    </div>
+  } @else if (status() === 'error') {
+    <p class="product__state product__state--error">
+      Impossible de charger ce produit. Réessayez plus tard.
+    </p>
+  } @else if (product(); as p) {
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <ol>
+        <li><a routerLink="/shop">Accueil</a></li> <!-- ADAPTER -->
+        <li><a routerLink="/shop/products">Boutique</a></li> <!-- ADAPTER -->
+        <li aria-current="page">{{ p.name }}</li>
+      </ol>
     </nav>
 
-    <article class="product-page__layout">
-      <div class="product-page__media">
-        <div class="product-page__hero-image">
-          <img
-            [src]="currentImage()"
-            [alt]="prod.name || 'Image du produit'"
-            (error)="onImageError($event)"
-          />
+    <div class="product__layout">
+      <div class="gallery">
+        <div class="gallery__main">
+          <img [src]="currentImage()" [alt]="p.name" (error)="onImageError($event)" />
         </div>
 
-        @if (prod.images.length > 1) {
-          <div class="product-page__thumbnails" role="group" aria-label="Galerie d'images">
-            @for (image of prod.images; track image.id) {
+        @if (p.images.length > 1) {
+          <div class="gallery__thumbs">
+            @for (img of p.images; track img.id; let i = $index) {
               <button
                 type="button"
-                class="product-page__thumbnail"
-                [class.is-active]="currentImage() === image.url"
-                (click)="selectImage(image.url)"
-                [attr.aria-label]="'Afficher l\'image ' + image.id"
+                class="gallery__thumb"
+                [class.gallery__thumb--active]="img.url === currentImage()"
+                [attr.aria-label]="'Voir l\'image ' + (i + 1)"
+                (click)="selectImage(img.url)"
               >
-                <img [src]="image.url" [alt]="prod.name" />
+                <img [src]="img.url" [alt]="p.name" (error)="onImageError($event)" />
               </button>
             }
           </div>
         }
       </div>
 
-      <div class="product-page__info">
-        <p class="product-page__category">
-          {{ prod.category?.name || 'Sans catégorie' }}
-        </p>
+      <div class="info">
+        @if (p.category) {
+          <p class="info__category">{{ p.category.name }}</p>
+        }
+        <h1 class="info__name">{{ p.name }}</h1>
+        <app-price class="info__price" [value]="p.price" />
 
-        <h1 class="product-page__name">
-          {{ prod.name || 'Produit sans nom' }}
-        </h1>
-
-        <div class="product-page__price">
-          <app-price [value]="prod.price" />
+        <div class="info__action">
+          <app-add-to-cart [product]="p" />
         </div>
 
-        <p class="product-page__description">
-          {{ prod.description }}
-        </p>
+        <ul class="perks">
+          <!-- ADAPTER : remplace ces textes par ta vraie politique -->
+          <li><span aria-hidden="true">✓</span> Livraison rapide</li>
+          <li><span aria-hidden="true">✓</span> Retours sous 14 jours</li>
+          <li><span aria-hidden="true">✓</span> Paiement sécurisé</li>
+        </ul>
 
-        <div class="product-page__actions">
-          <app-add-to-cart [product]="prod" />
+        <div class="info__about">
+          <h2>Description</h2>
+          <p>{{ p.description }}</p>
         </div>
       </div>
-    </article>
-  } @else {
-    <div class="product-page__not-found">
-      <h1>Produit introuvable</h1>
-      <p>Le produit demandé n'existe pas ou a été déplacé.</p>
-      <a routerLink="/shop" class="product-page__return-link">
-        Retour à la boutique
-      </a>
     </div>
+
+    @if (related().length > 0) {
+      <section class="related" aria-labelledby="related-title">
+        <h2 id="related-title">Vous aimerez aussi</h2>
+        <div class="related__grid">
+          @for (item of related(); track item.id) {
+            <app-product-card [product]="item" />
+          }
+        </div>
+      </section>
+    }
   }
 </section>
