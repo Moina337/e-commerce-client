@@ -1,13 +1,12 @@
-
 <article class="card">
-  <div class="card__image">
+  <a class="card__image" [routerLink]="['/shop/product', product().slug]">
     <img
       [src]="productImage"
       [alt]="product().name || 'Image du produit'"
       loading="lazy"
       (error)="onImageError($event)"
     />
-  </div>
+  </a>
 
   <div class="card__body">
     <p class="card__category">
@@ -15,7 +14,9 @@
     </p>
 
     <h3 class="card__name">
-      {{ product().name || 'Produit sans nom' }}
+      <a [routerLink]="['/shop/product', product().slug]">
+        {{ product().name || 'Produit sans nom' }}
+      </a>
     </h3>
 
    <app-price class="card__price" [value]="product().price" />

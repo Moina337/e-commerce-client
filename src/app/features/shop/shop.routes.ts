@@ -17,10 +17,16 @@ export const SHOP_ROUTES: Routes = [
             (module) => module.ShopPageComponent,
           ),
       },
-      
       {
-          path: 'shop/cart',
-          loadComponent: () =>
+        path: 'shop/product/:slug',
+        loadComponent: () =>
+          import('./pages/product-page/product-page.component').then(
+            (module) => module.ProductPageComponent,
+          ),
+      },
+      {
+        path: 'shop/cart',
+        loadComponent: () =>
           import('./pages/cart-page/cart-page.component').then(
             (module) => module.CartPageComponent,
           ),

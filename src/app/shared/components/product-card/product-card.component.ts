@@ -1,10 +1,10 @@
-
 import {
   CurrencyPipe,
   registerLocaleData,
 } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { Component, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ShopProduct } from '../../models/shop-product.model';
 import { PriceComponent } from '../price/price.component';
 import { AddToCartComponent } from '../app-add-to-cart/add-to-cart.component';
@@ -14,7 +14,7 @@ registerLocaleData(localeFr);
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [PriceComponent, AddToCartComponent],
+  imports: [RouterLink, PriceComponent, AddToCartComponent],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })

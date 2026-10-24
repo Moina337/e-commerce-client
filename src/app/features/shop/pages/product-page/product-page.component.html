@@ -1,0 +1,67 @@
+<section class="product-page">
+  @if (product(); as prod) {
+    <nav class="product-page__nav" aria-label="Navigation">
+      <a routerLink="/shop" class="product-page__back-link">
+        &larr; Retour à la boutique
+      </a>
+    </nav>
+
+    <article class="product-page__layout">
+      <div class="product-page__media">
+        <div class="product-page__hero-image">
+          <img
+            [src]="currentImage()"
+            [alt]="prod.name || 'Image du produit'"
+            (error)="onImageError($event)"
+          />
+        </div>
+
+        @if (prod.images.length > 1) {
+          <div class="product-page__thumbnails" role="group" aria-label="Galerie d'images">
+            @for (image of prod.images; track image.id) {
+              <button
+                type="button"
+                class="product-page__thumbnail"
+                [class.is-active]="currentImage() === image.url"
+                (click)="selectImage(image.url)"
+                [attr.aria-label]="'Afficher l\'image ' + image.id"
+              >
+                <img [src]="image.url" [alt]="prod.name" />
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="product-page__info">
+        <p class="product-page__category">
+          {{ prod.category?.name || 'Sans catégorie' }}
+        </p>
+
+        <h1 class="product-page__name">
+          {{ prod.name || 'Produit sans nom' }}
+        </h1>
+
+        <div class="product-page__price">
+          <app-price [value]="prod.price" />
+        </div>
+
+        <p class="product-page__description">
+          {{ prod.description }}
+        </p>
+
+        <div class="product-page__actions">
+          <app-add-to-cart [product]="prod" />
+        </div>
+      </div>
+    </article>
+  } @else {
+    <div class="product-page__not-found">
+      <h1>Produit introuvable</h1>
+      <p>Le produit demandé n'existe pas ou a été déplacé.</p>
+      <a routerLink="/shop" class="product-page__return-link">
+        Retour à la boutique
+      </a>
+    </div>
+  }
+</section>
