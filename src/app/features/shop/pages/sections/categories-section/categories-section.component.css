@@ -1,0 +1,113 @@
+:host {
+  display: block;
+}
+
+.categories {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-3) 0;
+}
+
+.categories__title {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Conteneur : sert de repère aux flèches posées par-dessus */
+.scroller {
+  position: relative;
+}
+
+/* Une seule ligne, qui défile si elle déborde */
+.scroller__row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-2);
+  margin: 0;
+  /* Marge interne : le contour de focus des pastilles n'est pas coupé */
+  padding: 4px;
+  overflow-x: auto;
+  list-style: none;
+  scroll-snap-type: x proximity;
+  /* Barre masquée : les flèches et le balayage la remplacent */
+  scrollbar-width: none;
+}
+
+.scroller__row::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller__row li {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.pill {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.pill:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.pill:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Flèches */
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  padding: 0 0 4px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.arrow--left {
+  left: 0;
+}
+
+.arrow--right {
+  right: 0;
+}
+
+.arrow:hover {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.arrow:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}

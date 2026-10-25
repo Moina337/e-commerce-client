@@ -1,0 +1,41 @@
+@if (categories().length > 0) {
+  <section class="categories" aria-labelledby="categories-title">
+    <h2 id="categories-title" class="categories__title">Parcourir par catégorie</h2>
+
+    <div class="scroller">
+      @if (canScrollLeft()) {
+        <button type="button" class="arrow arrow--left"
+                aria-label="Catégories précédentes" (click)="scroll(-1)">
+          ‹
+        </button>
+      }
+
+      <ul #row class="scroller__row" (scroll)="updateArrows()">
+        <li>
+          <a class="pill" routerLink="/shop/products"> <!-- ADAPTER -->
+            Tous les produits
+          </a>
+        </li>
+
+        @for (category of categories(); track category.id) {
+          <li>
+            <a
+              class="pill"
+              routerLink="/shop/products"
+              [queryParams]="{ category: category.slug }"
+            >
+              {{ category.name }}
+            </a>
+          </li>
+        }
+      </ul>
+
+      @if (canScrollRight()) {
+        <button type="button" class="arrow arrow--right"
+                aria-label="Catégories suivantes" (click)="scroll(1)">
+          ›
+        </button>
+      }
+    </div>
+  </section>
+}

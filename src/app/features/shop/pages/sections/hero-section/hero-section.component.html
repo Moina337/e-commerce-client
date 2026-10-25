@@ -1,0 +1,25 @@
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__inner">
+    <div class="hero__content">
+      <p class="hero__eyebrow">CHAUSSURES POUR HOMME</p>
+      <h1 id="hero-title" class="hero__title">Marchez avec <em>caractère</em>.</h1>
+      <p class="hero__text">Découvrez notre sélection de chaussures pour homme.</p>
+
+      <a class="hero__button" routerLink="/shop/products">Découvrir la collection</a> <!-- ADAPTER -->
+    </div>
+
+    @if (image(); as src) {
+      <div class="hero__media">
+        <img [src]="src" [alt]="imageAlt()" />
+
+        @if (product(); as p) {
+          <a class="hero__card" [routerLink]="['/shop/product', p.slug]"> <!-- ADAPTER -->
+            <span class="hero__card-label">À DÉCOUVRIR</span>
+            <span class="hero__card-name">{{ p.name }}</span>
+            <app-price class="hero__card-price" [value]="p.price" />
+          </a>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .shop-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -9,7 +13,7 @@
   color: var(--color-accent);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.15em;
 }
 
 .shop-page__intro {
@@ -51,6 +55,7 @@
 }
 
 .shop-page__count {
+  margin: 0 0 var(--space-3);
   color: var(--color-text-muted);
   font-size: 14px;
 }
@@ -69,8 +74,13 @@
   margin-top: var(--space-5);
 }
 
+.shop-page__state,
 .shop-page__empty {
   padding: var(--space-6) 0;
-  text-align: center;
   color: var(--color-text-muted);
+  text-align: center;
+}
+
+.shop-page__state--error {
+  color: var(--color-danger);
 }

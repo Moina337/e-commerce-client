@@ -1,0 +1,28 @@
+@if (loading()) {
+  <section class="featured" aria-busy="true">
+    <div class="featured__header">
+      <h2>Notre sélection</h2>
+    </div>
+    <div class="featured__grid">
+      @for (n of placeholders; track n) {
+        <div class="skeleton" aria-hidden="true"></div>
+      }
+    </div>
+  </section>
+} @else if (products().length > 0) {
+  <section class="featured" aria-labelledby="featured-title">
+    <div class="featured__header">
+      <div>
+        <p class="featured__eyebrow">À DÉCOUVRIR</p>
+        <h2 id="featured-title">Notre sélection</h2>
+      </div>
+      <a class="featured__link" routerLink="/shop/products">Voir toute la collection →</a> <!-- ADAPTER -->
+    </div>
+
+    <div class="featured__grid">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  </section>
+}
