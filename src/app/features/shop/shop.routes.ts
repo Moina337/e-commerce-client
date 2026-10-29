@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '../../core/guards/auth.guard'; 
 import { ShopLayoutComponent } from './shop-layout/shop-layout.component';
 
 export const SHOP_ROUTES: Routes = [
@@ -6,6 +7,14 @@ export const SHOP_ROUTES: Routes = [
     path: '',
     component: ShopLayoutComponent,
     children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./pages/home-page/home-page.component').then(
+            (module) => module.HomePageComponent,
+          ),
+      },
       {
         path: 'shop/products',
         redirectTo: 'shop',
@@ -32,11 +41,10 @@ export const SHOP_ROUTES: Routes = [
           ),
       },
       {
-        path: '',
-        loadComponent: () =>
-          import('./pages/home-page/home-page.component').then(
-            (module) => module.HomePageComponent,
-          ),
+        path: 'profil',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('../profil/profil.routes').then((m) => m.PROFIL_ROUTES),
       },
     ],
   },

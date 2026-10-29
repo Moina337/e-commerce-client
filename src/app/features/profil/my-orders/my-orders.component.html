@@ -1,0 +1,61 @@
+<div class="orders-container">
+  <h2>Mon historique de commandes</h2>
+  <p class="total-count">Vous avez passé au total <strong>{{ totalElements() }}</strong> commande(s)</p>
+
+  @if (isLoading()) {
+    <!-- 1. État de Chargement -->
+    <div class="loading-spinner">
+      <p>Chargement de vos commandes...</p>
+    </div>
+  } @else {
+    <!-- 2. Liste des commandes ou vue vide -->
+    @for (order of orders(); track order.id) {
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <span class="order-label">Commande N° :</span>
+            <span class="order-id">#{{ order.id }}</span>
+          </div>
+          <div class="order-status" [className]="'status-' + order.status.toLowerCase()">
+            {{ order.status }}
+          </div>
+        </div>
+
+        <div class="order-body">
+          <p><span class="order-label">Date :</span> {{ order.createdAt | date:'dd/MM/yyyy à HH:mm' }}</p>
+          <p><span class="order-label">Total :</span> <strong class="order-price">{{ order.totalAmount| currency:'EUR' }}</strong></p>
+        </div>
+
+        <div class="order-actions">
+          <button class="btn-detail">Voir les détails</button>
+        </div>
+      </div>
+    } @empty {
+      <!-- S'exécute automatiquement si le tableau orders() est vide -->
+      <div class="no-orders">
+        <p>Vous n'avez pas encore passé de commande.</p>
+      </div>
+    }
+
+    <!-- 3. Barre de Pagination (S'affiche s'il y a plus d'une page) -->
+    @if (totalPages() > 1) {
+      <div class="pagination-controls">
+        <button 
+          [disabled]="currentPage() === 0" 
+          (click)="goToPage(currentPage() - 1)"
+          class="page-btn">
+          Précédent
+        </button>
+
+        <span class="page-info">Page {{ currentPage() + 1 }} sur {{ totalPages() }}</span>
+
+        <button 
+          [disabled]="currentPage() === totalPages() - 1" 
+          (click)="goToPage(currentPage() + 1)"
+          class="page-btn">
+          Suivant
+        </button>
+      </div>
+    }
+  }
+</div>

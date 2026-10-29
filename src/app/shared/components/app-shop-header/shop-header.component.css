@@ -43,6 +43,10 @@
   color: var(--color-primary);
 }
 
+.header__user-name:hover {
+  text-decoration: underline;
+}
+
 .header__logo-ora {
   color: var(--color-accent);
 }

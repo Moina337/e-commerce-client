@@ -8,7 +8,7 @@ import { CategoriesSectionComponent } from '../sections/categories-section/categ
 import { FinalBannerSectionComponent } from '../sections/final-banner-section/final-banner-section.component';
 
 @Component({
-  imports: [ProductCardComponent,HeroSectionComponent,CategoriesSectionComponent, 
+  imports: [ HeroSectionComponent,CategoriesSectionComponent, 
     FeaturedProductsSectionComponent,FinalBannerSectionComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',

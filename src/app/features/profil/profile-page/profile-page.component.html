@@ -1,0 +1,84 @@
+<section class="profile">
+  @if (user(); as u) {
+    <header class="profile__header">
+      <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+      <div>
+        <h1 class="profile__name">{{ u.name }}</h1>
+        <p class="profile__email">{{ u.email }}</p>
+        <span class="role" [attr.data-role]="u.role">{{ roleLabel() }}</span>
+      </div>
+    </header>
+
+    <div class="profile__grid">
+      <section class="card" aria-labelledby="account-title">
+        <h2 id="account-title" class="card__title">Mon compte</h2>
+
+        <dl class="info">
+          <div class="info__row">
+            <dt>Nom</dt>
+            <dd>{{ u.name }}</dd>
+          </div>
+          <div class="info__row">
+            <dt>Email</dt>
+            <dd>{{ u.email }}</dd>
+          </div>
+          <div class="info__row">
+            <dt>Type de compte</dt>
+            <dd>{{ roleLabel() }}</dd>
+          </div>
+        </dl>
+
+        <div class="card__actions">
+          @if (isAdmin()) {
+            <a class="link-button" routerLink="/admin/dashboard">Accéder à l'administration</a>
+          }
+          <app-button variant="secondary" (clicked)="logout()">Se déconnecter</app-button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="orders-title">
+        <div class="card__head">
+          <h2 id="orders-title" class="card__title">Mes dernières commandes</h2>
+          @if (totalOrders() > 3) {
+            <a class="card__link" routerLink="/shop/orders">Tout voir ({{ totalOrders() }})</a> <!-- ADAPTER -->
+          }
+        </div>
+
+        @if (ordersLoading()) {
+          <p class="state">Chargement…</p>
+        } @else if (ordersError()) {
+          <div class="state state--error">
+            <p>Impossible de charger vos commandes.</p>
+            <app-button variant="secondary" (clicked)="loadOrders()">Réessayer</app-button>
+          </div>
+        } @else if (orders().length === 0) {
+          <div class="state">
+            <p>Vous n'avez pas encore passé de commande.</p>
+            <a class="card__link" routerLink="/shop/products">Découvrir la collection</a> <!-- ADAPTER -->
+          </div>
+        } @else {
+          <ul class="orders">
+            @for (order of orders(); track order.id) {
+              <li>
+                <a class="order" [routerLink]="['/shop/orders', order.id]"> <!-- ADAPTER -->
+                  <div>
+                    <p class="order__number">Commande n° {{ order.id }}</p>
+                    <p class="order__meta">{{ formatDate(order.createdAt) }}</p>
+                  </div>
+                  <span class="badge" [attr.data-status]="order.status">
+                    {{ labels[order.status] }}
+                  </span>
+                  <app-price class="order__total" [value]="order.totalAmount" />
+                </a>
+              </li>
+            }
+          </ul>
+
+          <a class="card__link card__link--block" routerLink="/shop/orders">
+            Voir toutes mes commandes
+          </a> <!-- ADAPTER -->
+        }
+      </section>
+    </div>
+  }
+</section>

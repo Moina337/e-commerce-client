@@ -15,6 +15,7 @@ export const routes: Routes = [
         (module) => module.ADMIN_ROUTES,
       ),
   },
+  
   {
     path: 'login',
     loadComponent: () =>
