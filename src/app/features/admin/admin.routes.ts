@@ -57,12 +57,19 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
-        path: 'orders',
-        loadComponent: () =>
-          import('./pages/orders/liste-commandes/liste-commandes.component').then(
-            (module) => module.OrdersPageComponent,
-          ),
-      },
+  path: 'orders',
+  loadComponent: () =>
+    import('./orders/admin-orders-page/admin-orders-page.component').then(
+      (m) => m.AdminOrdersPageComponent,
+    ),
+},
+{
+  path: 'orders/:id',
+  loadComponent: () =>
+    import('./orders/admin-order-detail-page/admin-order-detail-page.component').then(
+      (m) => m.AdminOrderDetailPageComponent,
+    ),
+},
       {
         path: 'customers',
         loadComponent: () =>

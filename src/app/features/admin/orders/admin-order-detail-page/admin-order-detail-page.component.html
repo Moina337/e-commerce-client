@@ -1,0 +1,109 @@
+<section class="page">
+  @if (state() === 'loading') {
+    <p class="state">Chargement de la commande…</p>
+  } @else if (state() === 'not-found') {
+    <div class="state">
+      <h1>Commande introuvable</h1>
+      <a routerLink="/admin/orders">Retour aux commandes</a>
+    </div>
+  } @else if (state() === 'error') {
+    <p class="state state--error">Impossible de charger cette commande.</p>
+  } @else if (order(); as o) {
+    <a class="back" routerLink="/admin/orders">Retour aux commandes</a>
+
+    <header class="head">
+      <div>
+        <h1>Commande #{{ o.id }}</h1>
+        <p class="head__date">Passée le {{ formatDate(o.createdAt) }}</p>
+      </div>
+      <span class="badge" [attr.data-status]="o.status">{{ labels[o.status] }}</span>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2 class="card__title">Articles</h2>
+
+        <table class="items">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th class="num">Qté</th>
+              <th class="num">Prix unitaire</th>
+              <th class="num">Sous-total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of o.items; track item.product.id) {
+              <tr>
+                <td>{{ item.product.name }}</td>
+                <td class="num">{{ item.quantity }}</td>
+                <td class="num"><app-price [value]="item.unitPrice" /></td>
+                <td class="num"><app-price [value]="item.subtotal" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <p class="total">
+          <span>Total</span>
+          <app-price [value]="o.totalAmount" />
+        </p>
+      </section>
+
+      <div class="side">
+        <section class="card">
+          <h2 class="card__title">Client</h2>
+          <p class="client__name">{{ o.client.name }}</p>
+          <a class="client__email" [href]="'mailto:' + o.client.email">{{ o.client.email }}</a>
+          <p class="client__id">Client n° {{ o.client.id }}</p>
+        </section>
+
+        <section class="card">
+          <h2 class="card__title">Statut</h2>
+
+          <mat-form-field appearance="outline" class="status-field">
+            <mat-label>Nouveau statut</mat-label>
+            <mat-select
+              [value]="selectedStatus()"
+              [disabled]="saving()"
+              (selectionChange)="onStatusChange($event)"
+            >
+              @for (s of statuses; track s) {
+                <mat-option [value]="s">{{ labels[s] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          @if (confirmingCancel()) {
+            <div class="confirm" role="alertdialog" aria-label="Confirmer l'annulation">
+              <p>Annuler cette commande ? Cette action peut être définitive.</p>
+              <div class="confirm__actions">
+                <button mat-stroked-button type="button" [disabled]="saving()"
+                        (click)="confirmingCancel.set(false)">
+                  Retour
+                </button>
+                <button mat-flat-button type="button" [disabled]="saving()" (click)="save()">
+                  {{ saving() ? 'Annulation…' : 'Oui, annuler' }}
+                </button>
+              </div>
+            </div>
+          } @else {
+            <button mat-flat-button type="button"
+                    [disabled]="!changed() || saving()" (click)="save()">
+              {{ saving() ? 'Enregistrement…' : 'Mettre à jour le statut' }}
+            </button>
+          }
+
+          @if (saved()) {
+            <p class="msg msg--ok" role="status">Statut mis à jour.</p>
+          }
+          @if (saveError()) {
+            <p class="msg msg--error" role="alert">{{ saveError() }}</p>
+          }
+
+          <p class="updated">Dernière mise à jour : {{ formatDate(o.updatedAt) }}</p>
+        </section>
+      </div>
+    </div>
+  }
+</section>

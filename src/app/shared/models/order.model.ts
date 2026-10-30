@@ -27,3 +27,9 @@ export interface Order {
   items: OrderItem[];
   createdAt: string;
 }
+
+// Vue admin : ajoute le client et la date de mise à jour
+export interface AdminOrder extends Order {
+  client: { id: number; email: string; name: string };
+  updatedAt: string;
+}

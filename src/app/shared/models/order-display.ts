@@ -17,3 +17,6 @@ export function formatOrderDate(iso: string): string {
     timeStyle: 'short',
   }).format(new Date(iso));
 }
+
+// Tous les statuts, dans l'ordre du cycle de vie (déduit des libellés)
+export const ORDER_STATUSES = Object.keys(ORDER_STATUS_LABELS) as OrderStatus[];
