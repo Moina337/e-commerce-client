@@ -1,0 +1,58 @@
+<section class="orders">
+  <nav class="breadcrumb" aria-label="Fil d'Ariane">
+    <ol>
+      <li><a routerLink="/">Accueil</a></li>
+      <li><a routerLink="/profil">Mon profil</a></li>
+      <li aria-current="page">Mes commandes</li>
+    </ol>
+  </nav>
+
+  <h1>Mes commandes</h1>
+
+  @if (loading()) {
+    <p class="orders__state">Chargement de vos commandes…</p>
+  } @else if (error()) {
+    <div class="orders__state orders__state--error">
+      <p>Impossible de charger vos commandes.</p>
+      <app-button variant="secondary" (clicked)="load(pageIndex())">Réessayer</app-button>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="orders__state">
+      <p>Vous n'avez pas encore passé de commande.</p>
+      <a routerLink="/shop">Découvrir la collection</a>
+    </div>
+  } @else {
+    <p class="orders__count">{{ totalElements() }} commande(s)</p>
+
+    <ul class="orders__list">
+      @for (order of orders(); track order.id) {
+        <li>
+          <a class="order" [routerLink]="['/profil/orders', order.id]">
+            <div>
+              <p class="order__number">Commande n° {{ order.id }}</p>
+              <p class="order__meta">
+                {{ formatDate(order.createdAt) }} · {{ itemCount(order) }} article(s)
+              </p>
+            </div>
+
+            <span class="badge" [attr.data-status]="order.status">
+              {{ labels[order.status] }}
+            </span>
+
+            <app-price class="order__total" [value]="order.totalAmount" />
+          </a>
+        </li>
+      }
+    </ul>
+
+    @if (totalPages() > 1) {
+      <nav class="orders__pagination" aria-label="Pagination des commandes">
+        <app-button variant="secondary" [disabled]="pageIndex() === 0"
+                    (clicked)="goToPage(pageIndex() - 1)">Précédent</app-button>
+        <span>Page {{ pageIndex() + 1 }} / {{ totalPages() }}</span>
+        <app-button variant="secondary" [disabled]="pageIndex() >= totalPages() - 1"
+                    (clicked)="goToPage(pageIndex() + 1)">Suivant</app-button>
+      </nav>
+    }
+  }
+</section>

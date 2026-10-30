@@ -1,0 +1,69 @@
+<section class="detail">
+  @if (status() === 'loading') {
+    <p class="detail__state">Chargement de la commande…</p>
+  } @else if (status() === 'not-found') {
+    <div class="detail__state">
+      <h1>Commande introuvable</h1>
+     <a routerLink="/profil/orders">Retour à mes commandes</a>
+    </div>
+  } @else if (status() === 'error') {
+    <p class="detail__state detail__state--error">
+      Impossible de charger cette commande. Réessayez plus tard.
+    </p>
+  } @else if (order(); as o) {
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <ol>
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/profil/orders">Mes commandes</a></li>
+        <li aria-current="page">Commande n° {{ o.id }}</li>
+      </ol>
+    </nav>
+
+    <header class="detail__header">
+      <div>
+        <h1>Commande n° {{ o.id }}</h1>
+        <p class="detail__date">Passée le {{ formatDate(o.createdAt) }}</p>
+      </div>
+      <span class="badge" [attr.data-status]="o.status">{{ labels[o.status] }}</span>
+    </header>
+
+    <ul class="items">
+      @for (item of o.items; track item.product.id) {
+        <li class="item">
+          <div class="item__info">
+            <a [routerLink]="['/shop/product', item.product.slug]">{{ item.product.name }}</a>
+            <p>{{ item.quantity }} × <app-price [value]="item.unitPrice" /></p>
+          </div>
+          <app-price class="item__subtotal" [value]="item.subtotal" />
+        </li>
+      }
+    </ul>
+
+    <p class="total">
+      <span>Total</span>
+      <app-price [value]="o.totalAmount" />
+    </p>
+
+    @if (cancelError()) {
+      <p class="detail__error" role="alert">{{ cancelError() }}</p>
+    }
+
+    @if (canCancel()) {
+      @if (confirming()) {
+        <div class="cancel" role="alertdialog" aria-label="Confirmer l'annulation">
+          <p>Voulez-vous vraiment annuler cette commande ?</p>
+          <div class="cancel__actions">
+            <app-button variant="secondary" [disabled]="cancelling()" (clicked)="keepOrder()">
+              Non, la conserver
+            </app-button>
+            <app-button [disabled]="cancelling()" (clicked)="confirmCancel()">
+              {{ cancelling() ? 'Annulation…' : 'Oui, annuler' }}
+            </app-button>
+          </div>
+        </div>
+      } @else {
+        <app-button variant="secondary" (clicked)="askCancel()">Annuler la commande</app-button>
+      }
+    }
+  }
+</section>
