@@ -1,0 +1,89 @@
+:host {
+  display: block;
+}
+
+
+.footer {
+  background: var(--color-primary);
+  color: var(--color-border);
+}
+
+.footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-3) var(--space-5);
+}
+
+@media (min-width: 700px) {
+  .footer__inner {
+    grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
+  }
+}
+
+.footer__logo {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  color: var(--color-surface);
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.footer__logo-accent {
+  color: var(--color-accent);
+}
+
+.footer__tagline {
+  max-width: 32ch;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Les h2 du site sont en police serif : ici, un petit libellé en capitales */
+.footer__title {
+  margin: 0 0 var(--space-3);
+  color: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.footer__col ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__col a {
+  display: inline-block;
+  padding: var(--space-1) 0;
+  transition: color 0.2s;
+}
+
+.footer__col a:hover {
+  color: var(--color-accent);
+}
+
+.footer a:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.footer__bar {
+  border-top: 1px solid rgb(255 255 255 / 12%);
+}
+
+.footer__bar p {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: 13px;
+}

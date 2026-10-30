@@ -1,0 +1,35 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <a class="footer__logo" routerLink="/" aria-label="Amiora, accueil">
+        <span>Ami</span><span class="footer__logo-accent">ora</span>
+      </a>
+      <p class="footer__tagline">Une sélection de chaussures pour homme.</p>
+    </div>
+
+    <nav class="footer__col" aria-label="Boutique">
+      <h2 class="footer__title">Boutique</h2>
+      <ul>
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/shop">Toute la collection</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer__col" aria-label="Mon compte">
+      <h2 class="footer__title">Mon compte</h2>
+      <ul>
+        @if (isLoggedIn()) {
+          <li><a routerLink="/profil">Mon profil</a></li>
+          <li><a routerLink="/profil/orders">Mes commandes</a></li>
+        } @else {
+          <li><a routerLink="/login">Connexion</a></li>
+          <li><a routerLink="/register">Créer un compte</a></li>
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="footer__bar">
+    <p>© {{ year }} Amiora. Tous droits réservés.</p>
+  </div>
+</footer>
