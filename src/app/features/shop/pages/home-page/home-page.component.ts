@@ -6,10 +6,12 @@ import { HeroSectionComponent } from '../sections/hero-section/hero-section.comp
 import { FeaturedProductsSectionComponent } from '../sections/featured-products-section/featured-products-section.component';
 import { CategoriesSectionComponent } from '../sections/categories-section/categories-section.component';
 import { FinalBannerSectionComponent } from '../sections/final-banner-section/final-banner-section.component';
+import { AdvantagesSectionComponent } from '../sections/advantages-section/advantages-section.component';
+import { TestimonialsSectionComponent } from '../sections/testimonials-section/testimonials-section.component';
 
 @Component({
   imports: [ HeroSectionComponent,CategoriesSectionComponent, 
-    FeaturedProductsSectionComponent,FinalBannerSectionComponent],
+    AdvantagesSectionComponent, TestimonialsSectionComponent, FeaturedProductsSectionComponent, FinalBannerSectionComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
